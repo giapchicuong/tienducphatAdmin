@@ -1,0 +1,49 @@
+.newList{
+    flex: 4;
+}
+.newTitleContainer {
+    padding-bottom: 20px;
+}
+.newListItem{
+    display: flex;
+    align-items: center;
+}
+
+.newTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.newAddButton {
+    margin-right: 50px;
+    width: 80px;
+    border: none;
+    padding: 5px;
+    background-color: teal;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+}
+.newListImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+.newListEdit{
+    border: none;
+    border-radius: 10px;
+    padding: 5px 10px;
+    background-color: #3bb077;
+    color: white;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.newListDelete{
+    color: red;
+    cursor: pointer;
+}

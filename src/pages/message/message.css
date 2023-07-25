@@ -1,0 +1,158 @@
+.message {
+    flex: 4;
+    padding: 20px;
+  }
+  
+  .messageTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .messageAddButton {
+    width: 80px;
+    border: none;
+    padding: 5px;
+    background-color: teal;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .messageContainer {
+    display: flex;
+    margin-top: 20px;
+  }
+  
+  .messageShow {
+    flex: 1;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  }
+  
+  .messageUpdate {
+    flex: 2;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    margin-left: 20px;
+  }
+  
+  .messageShowTop {
+    display: flex;
+    align-items: center;
+  }
+  
+  .messageShowImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .messageShowTopTitle {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+  }
+  
+  .messageShowMessagename {
+    font-weight: 600;
+  }
+  
+  .messageShowMessageTitle {
+    font-weight: 300;
+  }
+  
+  .messageShowBottom{
+      margin-top: 20px;
+      width: 500px;
+  }
+  
+  .messageShowTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(175, 170, 170);
+  }
+  
+  .messageShowInfo{
+      display: flex;
+      align-items: center;
+      margin: 20px 0px;
+      color: #444;
+  }
+  
+  .messageShowIcon{
+      font-size: 16px !important;
+  }
+  
+  .messageShowInfoTitle{
+      margin-left: 10px;
+      width: 500px;
+      overflow: auto;
+
+  }
+  
+  .messageUpdateTitle{
+      font-size: 24px;
+      font-weight: 600;
+  }
+  
+  .messageUpdateForm{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }
+  
+  .messageUpdateItem{
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+  }
+  
+  .messageUpdateItem>label{
+      margin-bottom: 5px;
+      font-size: 14px;
+  }
+  
+  .messageUpdateInput{
+      border: none;
+      width: 250px;
+      height: 30px;
+      border-bottom: 1px solid gray;
+  }
+  
+  .messageUpdateRight{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+  
+  .messageUpdateUpload{
+      display: flex;
+      align-items: center;
+  }
+  
+  .messageUpdateImg{
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-right: 20px;
+  }
+  
+  .messageUpdateIcon{
+      cursor: pointer;
+  }
+  
+  .messageUpdateButton{
+      border-radius: 5px;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      background-color: darkblue;
+      color: white;
+      font-weight: 600;
+  }

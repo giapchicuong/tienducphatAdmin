@@ -1,0 +1,154 @@
+.category {
+    flex: 4;
+    padding: 20px;
+  }
+  
+  .categoryTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .categoryAddButton {
+    width: 80px;
+    border: none;
+    padding: 5px;
+    background-color: teal;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .categoryContainer {
+    display: flex;
+    margin-top: 20px;
+  }
+  
+  .categoryShow {
+    flex: 1;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+  }
+  
+  .categoryUpdate {
+    flex: 2;
+    padding: 20px;
+    -webkit-box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 15px -10px rgba(0, 0, 0, 0.75);
+    margin-left: 20px;
+  }
+  
+  .categoryShowTop {
+    display: flex;
+    align-items: center;
+  }
+  
+  .categoryShowImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .categoryShowTopTitle {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+  }
+  
+  .categoryShowCategoryname {
+    font-weight: 600;
+  }
+  
+  .categoryShowCategoryTitle {
+    font-weight: 300;
+  }
+  
+  .categoryShowBottom{
+      margin-top: 20px;
+  }
+  
+  .categoryShowTitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(175, 170, 170);
+  }
+  
+  .categoryShowInfo{
+      display: flex;
+      align-items: center;
+      margin: 20px 0px;
+      color: #444;
+  }
+  
+  .categoryShowIcon{
+      font-size: 16px !important;
+  }
+  
+  .categoryShowInfoTitle{
+      margin-left: 10px;
+  }
+  
+  .categoryUpdateTitle{
+      font-size: 24px;
+      font-weight: 600;
+  }
+  
+  .categoryUpdateForm{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }
+  
+  .categoryUpdateItem{
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+  }
+  
+  .categoryUpdateItem>label{
+      margin-bottom: 5px;
+      font-size: 14px;
+  }
+  
+  .categoryUpdateInput{
+      border: none;
+      width: 250px;
+      height: 30px;
+      border-bottom: 1px solid gray;
+  }
+  
+  .categoryUpdateRight{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  }
+  
+  .categoryUpdateUpload{
+      display: flex;
+      align-items: center;
+  }
+  
+  .categoryUpdateImg{
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-right: 20px;
+  }
+  
+  .categoryUpdateIcon{
+      cursor: pointer;
+  }
+  
+  .categoryUpdateButton{
+      border-radius: 5px;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      background-color: darkblue;
+      color: white;
+      font-weight: 600;
+  }

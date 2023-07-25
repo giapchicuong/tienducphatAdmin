@@ -1,0 +1,50 @@
+.newNew {
+  flex: 4;
+  margin-left: 100px;
+}
+.addNewForm {
+  margin-top: 10px;
+  display: flex;
+  width: 100%;
+}
+
+.addNewLeft {
+  width: 50%;
+}
+.addNewRight {
+  width: 50%;
+}
+
+.addNewItem {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.addNewItem > label {
+  color: gray;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.addNewItem > input {
+  padding: 10px;
+}
+
+.addNewItem > select {
+  padding: 10px;
+}
+
+.addNewButton {
+  margin-top: 10px;
+  padding: 10px 13px;
+  border: none;
+  border-radius: 10px;
+  background-color: darkblue;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  margin: 30px 0px 0px 380px;
+}
