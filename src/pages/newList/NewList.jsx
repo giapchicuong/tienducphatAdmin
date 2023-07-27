@@ -14,10 +14,13 @@ export default function NewList() {
     getNews(dispatch);
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    deleteNew(id, dispatch);
+  const handleDelete = async (id) => {
+    try {
+      await deleteNew(id, dispatch);
+      getNews(dispatch);
+    } catch (error) {}
+    getNews(dispatch);
   };
-
   const columns = [
     { field: "_id", headerName: "ID", width: 220 },
     {

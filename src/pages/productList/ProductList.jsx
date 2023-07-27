@@ -14,10 +14,15 @@ export default function ProductList() {
     getProducts(dispatch);
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    deleteProduct(id, dispatch);
-  };
 
+  const handleDelete = async (id) => {
+    try {
+      await deleteProduct(id, dispatch);
+      getProducts(dispatch);
+    } catch (error) {
+    }
+    getProducts(dispatch);
+  };
   const columns = [
     { field: "_id", headerName: "ID", width: 220 },
     {

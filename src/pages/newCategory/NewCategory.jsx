@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import Success from "../../components/Success/Success";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import { toast } from "react-toastify";
 export default function NewCategory() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
@@ -31,6 +32,7 @@ export default function NewCategory() {
 
   const handleClick = (e) => {
     e.preventDefault();
+    if(file != null) {
     const fileName = new Date().getTime() + file.name;
     const storage = getStorage(app);
     const storageRef = ref(storage, fileName);
@@ -74,6 +76,10 @@ export default function NewCategory() {
         });
       }
     );
+    
+  }else {
+      toast.warning("Vui lòng chọn ảnh cần thêm")
+  }
   };
 
   return (
@@ -105,24 +111,6 @@ export default function NewCategory() {
           Create
         </button>
       </form>
-      {openSuccess ? (
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={openSuccess}
-        >
-          <CircularProgress color="info" />
-          {openPopup ? (
-            <Success
-              title="Thành Công"
-              message="Đã thêm danh mục mới thành công"
-            />
-          ) : (
-            ""
-          )}
-        </Backdrop>
-      ) : (
-        ""
-      )}
     </div>
   );
 }

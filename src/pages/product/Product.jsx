@@ -20,6 +20,7 @@ import JoditEditor from "jodit-react";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRef } from "react";
+import { toast } from "react-toastify";
 export default function Product() {
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
@@ -110,7 +111,7 @@ export default function Product() {
   };
   // update product
   const [inputs, setInputs] = useState({});
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
   const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
   const handleChange = (e) => {
@@ -122,54 +123,130 @@ export default function Product() {
     setCat(e.target.value.split(","));
   };
 
+  const [files, setFiles] = useState([]);
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const orderedFiles = selectedFiles.sort((a, b) => {
+      // Sắp xếp tệp tin theo thứ tự chọn của người dùng
+      return a.lastModified - b.lastModified;
+    });
+    setFiles(orderedFiles);
+  };
+  
   const handleClick = (e) => {
     e.preventDefault();
-    const fileName = new Date().getTime() + file.name;
-    const storage = getStorage(app);
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    // Register three observers:
-    // 1. 'state_changed' observer, called any time the state changes
-    // 2. Error observer, called on failure
-    // 3. Completion observer, called on successful completion
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        // Observe state change events such as progress, pause, and resume
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-        }
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-      },
-      () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  
+    if (files.length > 0) {
+      const uploadPromises = files.map((file) => {
+        const fileName = new Date().getTime() + file.name;
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+  
+        return new Promise((resolve, reject) => {
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              // Observe state change events
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+                default:
+              }
+            },
+            (error) => {
+              // Handle unsuccessful uploads
+              reject(error);
+            },
+            () => {
+              // Handle successful uploads on complete
+              getDownloadURL(uploadTask.snapshot.ref)
+                .then((downloadURL) => {
+                  resolve(downloadURL);
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            }
+          );
+        });
+      });
+  
+      Promise.all(uploadPromises)
+        .then((downloadURLs) => {
           const product = {
             ...inputs,
-            img: downloadURL,
+            imgs: downloadURLs, // Lưu trữ các URL tải xuống trong imgs
             categories: cat,
             descSummary: descSummary,
             descDetails: descDetails,
           };
           updateProduct(productId, product, dispatch);
+        })
+        .catch((error) => {
+          // Xử lý lỗi khi tải lên không thành công
+          console.error(error);
         });
-      }
-    );
+    } else {
+      toast.warning("Vui lòng chọn ít nhất một tệp ảnh")
+    }
   };
+  // const handleClick = (e) => {
+  //   e.preventDefault();
+  //   const fileName = new Date().getTime() + file.name;
+  //   const storage = getStorage(app);
+  //   const storageRef = ref(storage, fileName);
+  //   const uploadTask = uploadBytesResumable(storageRef, file);
+
+  //   // Register three observers:
+  //   // 1. 'state_changed' observer, called any time the state changes
+  //   // 2. Error observer, called on failure
+  //   // 3. Completion observer, called on successful completion
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       // Observe state change events such as progress, pause, and resume
+  //       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+  //       const progress =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       console.log("Upload is " + progress + "% done");
+  //       switch (snapshot.state) {
+  //         case "paused":
+  //           console.log("Upload is paused");
+  //           break;
+  //         case "running":
+  //           console.log("Upload is running");
+  //           break;
+  //         default:
+  //       }
+  //     },
+  //     (error) => {
+  //       // Handle unsuccessful uploads
+  //     },
+  //     () => {
+  //       // Handle successful uploads on complete
+  //       // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //         const product = {
+  //           ...inputs,
+  //           img: downloadURL,
+  //           categories: cat,
+  //           descSummary: descSummary,
+  //           descDetails: descDetails,
+  //         };
+  //         updateProduct(productId, product, dispatch);
+  //       });
+  //     }
+  //   );
+  // };
 
   useEffect(() => {
     const getStats = async () => {
@@ -204,7 +281,7 @@ export default function Product() {
         </div>
         <div className="productTopRight">
           <div className="productInfoTop">
-            <img src={product.img} alt="" className="productInfoImg" />
+            <img src={product.imgs[0]} alt="" className="productInfoImg" />
             <span className="productName">{product.title}</span>
           </div>
           <div className="productInfoBottom">
@@ -355,16 +432,17 @@ export default function Product() {
           </div>
           <div className="productFormRight">
             <div className="productUpload">
-              <img src={product.img} alt="" className="productUploadImg" />
+              <img src={product.imgs[0]} alt="" className="productUploadImg" />
               <label for="file">
                 <Publish />
               </label>
               <input
                 type="file"
                 required
+                multiple
                 id="file"
                 style={{ display: "none" }}
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={handleFileChange}
               />
             </div>
             <button className="productButton" onClick={handleClick}>

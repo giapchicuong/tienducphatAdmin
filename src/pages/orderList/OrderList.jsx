@@ -15,8 +15,13 @@ export default function OrderList() {
   useEffect(() => {
     getOrders(dispatch);
   }, [dispatch]);
-  const handleDelete = (id) => {
-    deleteOrder(id, dispatch);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteOrder(id, dispatch);
+      getOrders(dispatch);
+    } catch (error) {}
+    getOrders(dispatch);
   };
   const columns = [
     { field: "fullname", headerName: "Họ tên", width: 250 },

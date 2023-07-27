@@ -19,6 +19,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Success from "../../components/Success/Success";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import { toast } from "react-toastify";
 export default function NewNew() {
   const [inputs, setInputs] = useState({});
   const [file, setFile] = useState(null);
@@ -151,7 +152,7 @@ export default function NewNew() {
         }
       );
     } else {
-      alert("Vui Lòng Nhập Đầy Đủ thông tin");
+      toast.warning("Vui lòng nhập đầy đủ thông tin")
     }
   };
 

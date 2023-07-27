@@ -19,9 +19,9 @@ import JoditEditor from "jodit-react";
 import Success from "../../components/Success/Success";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
+import { toast } from "react-toastify";
 export default function NewProduct() {
   const [inputs, setInputs] = useState({});
-  const [file, setFile] = useState(null);
   const [cat, setCat] = useState([]);
   const [descSummary, setDescSummary] = useState("");
   const [descDetails, setDescDetails] = useState("");
@@ -35,8 +35,6 @@ export default function NewProduct() {
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
-  const [openSuccess, setOpenSuccess] = useState(false);
-  const [openPopup, setOpenPopup] = useState(false);
   const [opendescSummary, setOpendescSummary] = useState(false);
   const [opendescDetails, setOpendescDetails] = useState(false);
   const handleOpendescSummary = () => setOpendescSummary(true);
@@ -98,62 +96,6 @@ export default function NewProduct() {
     boxShadow: 24,
     p: 4,
   };
-  // const handleClick = (e) => {
-  //   if (file !== null) {
-  //     e.preventDefault();
-  //     const fileName = new Date().getTime() + file.name;
-  //     const storage = getStorage(app);
-  //     const storageRef = ref(storage, fileName);
-  //     const uploadTask = uploadBytesResumable(storageRef, file);
-
-  //     // Register three observers:
-  //     // 1. 'state_changed' observer, called any time the state changes
-  //     // 2. Error observer, called on failure
-  //     // 3. Completion observer, called on successful completion
-  //     uploadTask.on(
-  //       "state_changed",
-  //       (snapshot) => {
-  //         // Observe state change events such as progress, pause, and resume
-  //         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-  //         const progress =
-  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //         console.log("Upload is " + progress + "% done");
-  //         switch (snapshot.state) {
-  //           case "paused":
-  //             console.log("Upload is paused");
-  //             break;
-  //           case "running":
-  //             console.log("Upload is running");
-  //             break;
-  //           default:
-  //         }
-  //       },
-  //       (error) => {
-  //         // Handle unsuccessful uploads
-  //       },
-  //       () => {
-  //         // Handle successful uploads on complete
-  //         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-  //         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //           const product = {
-  //             ...inputs,
-  //             img: downloadURL,
-  //             categories: cat,
-  //             descSummary: descSummary,
-  //             descDetails: descDetails,
-  //           };
-  //           addProduct(product, dispatch);
-  //           setOpenSuccess(true);
-  //           setTimeout(() => {
-  //             setOpenPopup(true);
-  //           }, 1000);
-  //         });
-  //       }
-  //     );
-  //   } else {
-  //     alert("Vui Lòng Nhập Đầy Đủ thông tin");
-  //   }
-  // };
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (e) => {
@@ -221,17 +163,13 @@ export default function NewProduct() {
             descDetails: descDetails,
           };
           addProduct(product, dispatch);
-          setOpenSuccess(true);
-          setTimeout(() => {
-            setOpenPopup(true);
-          }, 1000);
         })
         .catch((error) => {
           // Xử lý lỗi khi tải lên không thành công
           console.error(error);
         });
     } else {
-      alert("Vui lòng chọn ít nhất một tệp");
+      toast.warning("Vui lòng chọn ít nhất một tệp ảnh")
     }
   };
   
@@ -424,24 +362,6 @@ export default function NewProduct() {
           </button>
         </div>
       </form>
-      {openSuccess ? (
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={openSuccess}
-        >
-          <CircularProgress color="info" />
-          {openPopup ? (
-            <Success
-              title="Thành Công"
-              message="Đã thêm sản phẩm mới thành công"
-            />
-          ) : (
-            ""
-          )}
-        </Backdrop>
-      ) : (
-        ""
-      )}
     </div>
   );
 }

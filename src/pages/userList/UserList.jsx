@@ -13,8 +13,12 @@ export default function UserList() {
     getUsers(dispatch);
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    deleteUser(id, dispatch);
+  const handleDelete = async (id) => {
+    try {
+      await deleteUser(id, dispatch);
+      getUsers(dispatch);
+    } catch (error) {}
+    getUsers(dispatch);
   };
 
   const columns = [

@@ -18,6 +18,7 @@ import {
   } from "firebase/storage";
   import app from "../../firebase";
   import { updateCategory } from "../../redux/apiCalls";
+import { toast } from "react-toastify";
   
   export default function Category() {
     const location = useLocation();
@@ -38,6 +39,7 @@ import {
   
     const handleClick = (e) => {
       e.preventDefault();
+      if(file != null) {
       const fileName = new Date().getTime() + file.name;
       const storage = getStorage(app);
       const storageRef = ref(storage, fileName);
@@ -77,6 +79,10 @@ import {
           });
         }
       );
+      
+    }else {
+      toast.warning("Vui lòng chọn ảnh cần thêm")   
+    }
     };
   
     return (

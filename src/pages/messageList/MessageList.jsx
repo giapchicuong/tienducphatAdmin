@@ -14,8 +14,14 @@ export default function MessageList() {
   useEffect(() => {
     getMessages(dispatch);
   }, [dispatch]);
-  const handleDelete = (id) => {
-    deleteMessage(id, dispatch);
+
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteMessage(id, dispatch);
+      getMessages(dispatch);
+    } catch (error) {}
+    getMessages(dispatch);
   };
   const columns = [
     { field: "fullname", headerName: "Họ tên", width: 250 },
@@ -45,10 +51,10 @@ export default function MessageList() {
             <Link to={"/message/" + params.row._id}>
               <button className="messageListEdit">Edit</button>
             </Link>
-              {/* <button className="widgetSmButton"> */}
-                {/* <Visibility /> */}
-              {/* </button> */}
-              
+            {/* <button className="widgetSmButton"> */}
+            {/* <Visibility /> */}
+            {/* </button> */}
+
             <DeleteOutline
               className="productListDelete"
               onClick={() => handleDelete(params.row._id)}

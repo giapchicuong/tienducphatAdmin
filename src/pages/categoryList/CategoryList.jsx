@@ -14,10 +14,13 @@ export default function CategoryList() {
     getCategories(dispatch);
   }, [dispatch]);
 
-  const handleDelete = (id) => {
-    deleteCategory(id, dispatch);
+  const handleDelete = async (id) => {
+    try {
+      await deleteCategory(id, dispatch);
+      getCategories(dispatch);
+    } catch (error) {}
+    getCategories(dispatch);
   };
-
   const columns = [
     { field: "_id", headerName: "ID", width: 300 },
     {
