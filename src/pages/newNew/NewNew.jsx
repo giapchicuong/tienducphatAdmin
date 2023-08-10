@@ -38,7 +38,6 @@ export default function NewNew() {
   };
   const [opendescSummary, setOpendescSummary] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [openPopup, setOpenPopup] = useState(false);
   const handleOpendescSummary = () => setOpendescSummary(true);
   const handleClosedescSummary = () => setOpendescSummary(false);
   const [opendescDetails, setOpendescDetails] = useState(false);
@@ -100,8 +99,17 @@ export default function NewNew() {
     p: 4,
   };
   const handleClick = (e) => {
+    e.preventDefault();
+    
+    const hasNonEmptyInput = Object.values(inputs).some(
+      (value) => value.trim() !== ""
+    );
+
+    if (!hasNonEmptyInput) {
+      toast.warning("Vui lòng điền vào ít nhất một ô trước khi tạo mới.");
+      return;
+    }
     if (file !== null) {
-      e.preventDefault();
       const fileName = new Date().getTime() + file.name;
       const storage = getStorage(app);
       const storageRef = ref(storage, fileName);
@@ -143,11 +151,17 @@ export default function NewNew() {
               descSummary: descSummary,
               descDetails: descDetails,
             };
-            addNew(New, dispatch);
-            setOpenSuccess(true);
-            setTimeout(() => {
-              setOpenPopup(true);
-            }, 1000);
+
+            setOpenSuccess(true); // Open the popup when the button is clicked
+            addNew(New, dispatch)
+              .then(() => {
+                setOpenSuccess(false);
+              })
+              .catch((error) => {
+                // Handle error if category addition fails
+                toast.warning(error);
+                setOpenSuccess(false);
+              });
           });
         }
       );
@@ -310,14 +324,6 @@ export default function NewNew() {
           open={openSuccess}
         >
           <CircularProgress color="info" />
-          {openPopup ? (
-            <Success
-              title="Thành Công"
-              message="Đã thêm tin tức mới thành công"
-            />
-          ) : (
-            ""
-          )}
         </Backdrop>
       ) : (
         ""

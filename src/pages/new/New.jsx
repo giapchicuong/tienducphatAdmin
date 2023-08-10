@@ -38,10 +38,14 @@ export default function New() {
 
   // update the new
   const [cat, setCat] = useState([]);
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({
+    title: New.title,
+  });
+
   const [file, setFile] = useState(null);
-  const [descSummary, setDescSummary] = useState("");
-  const [descDetails, setDescDetails] = useState("");
+  const [descSummary, setDescSummary] = useState(New.descSummary || "");
+  const [descDetails, setDescDetails] = useState(New.descDetails || "");
+
   const [opendescSummary, setOpendescSummary] = useState(false);
   const handleOpendescSummary = () => setOpendescSummary(true);
   const handleClosedescSummary = () => setOpendescSummary(false);
@@ -112,56 +116,55 @@ export default function New() {
   const handleCat = (e) => {
     setCat(e.target.value.split(","));
   };
-  const handleClick = (e) => {
-    e.preventDefault();
-    if (file != null) {
-      const fileName = new Date().getTime() + file.name;
-      const storage = getStorage(app);
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
 
-      // Register three observers:
-      // 1. 'state_changed' observer, called any time the state changes
-      // 2. Error observer, called on failure
-      // 3. Completion observer, called on successful completion
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-          }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            const New = {
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    try {
+      let downloadURL = New.img; // Default value if the file is not updated
+
+      if (file) {
+        const fileName = new Date().getTime() + file.name;
+        const storage = getStorage(app);
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        // Monitor the upload progress
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => {
+            console.error("Error uploading file: ", error);
+          },
+          async () => {
+            downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            const updatedCategory = {
               ...inputs,
               img: downloadURL,
               categories: cat,
               descSummary: descSummary,
               descDetails: descDetails,
             };
-            updateNew(newId, New, dispatch);
-          });
-        }
-      );
-    } else {
-      toast.warning("Vui lòng chọn ảnh cần cập nhật");
+            updateNew(newId, updatedCategory, dispatch);
+          }
+        );
+      } else {
+        // If no new file is selected, update the category with other fields
+        const updatedCategory = {
+          ...inputs,
+          img: downloadURL,
+          categories: cat,
+          descSummary: descSummary,
+          descDetails: descDetails,
+        };
+        updateNew(newId, updatedCategory, dispatch);
+      }
+    } catch (error) {
+      console.error("Error updating category: ", error);
     }
   };
 
@@ -215,16 +218,22 @@ export default function New() {
                   type="text"
                   name="title"
                   placeholder={New.title}
+                  value={inputs.title}
                   className="newUpdateInput"
                   onChange={handleChange}
                 />
               </div>
               <div className="newUpdateItem">
                 <label>Categories</label>
-                <select name="cat" onChange={handleCat}>
-                  <option value={cattt[0]}>--Chọn--</option>
+                <select name="cat" onChange={handleCat} value={inputs.cat}>
                   {cattt.map((category) => (
-                    <option value={category.cat}>{category.title}</option>
+                    <option
+                      key={category.cat}
+                      value={category.cat}
+                      selected={New.cat && New.cat[0] === category.cat[0] ? true : false }
+                    >
+                      {category.title}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -266,7 +275,7 @@ export default function New() {
                     </Button>
                     <JoditEditor
                       ref={editor}
-                      value={descSummary}
+                      value={descSummary} // Use the stored content
                       config={config}
                       tabIndex={1}
                       onBlur={(newContent) => setDescSummary(newContent)}
@@ -325,7 +334,7 @@ export default function New() {
                     </Button>
                     <JoditEditor
                       ref={editor}
-                      value={descDetails}
+                      value={descDetails} // Use the stored content
                       config={config}
                       tabIndex={1}
                       onBlur={(newContent) => setDescDetails(newContent)}

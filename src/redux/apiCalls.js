@@ -326,11 +326,11 @@ export const deleteNew = async (id, dispatch) => {
   try {
     const res = await userRequest.delete(`/news/${id}`);
     dispatch(deleteNewSuccess(res.data));
-    toast.success(" thành công!");
+    toast.success("Xóa tin tức thành công!");
 
   } catch (err) {
     dispatch(deleteNewFailure());
-    toast.error(" thất bại, hãy thử lại.");
+    toast.error("Xóa tin tức thất bại, hãy thử lại.");
 
   }
 };

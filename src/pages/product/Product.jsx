@@ -28,7 +28,7 @@ export default function Product() {
   const product = useSelector((state) =>
     state.product.products.find((product) => product._id === productId)
   );
-  const cattt = useSelector((state) => state.category.categories);
+  const catSelector = useSelector((state) => state.category.categories);
   const MONTHS = useMemo(
     () => [
       "Jan",
@@ -46,8 +46,9 @@ export default function Product() {
     ],
     []
   );
-  const [descSummary, setDescSummary] = useState("");
-  const [descDetails, setDescDetails] = useState("");
+  const [descSummary, setDescSummary] = useState(product.descSummary || "");
+  const [descDetails, setDescDetails] = useState(product.descDetails || "");
+
   const [opendescSummary, setOpendescSummary] = useState(false);
   const handleOpendescSummary = () => setOpendescSummary(true);
   const handleClosedescSummary = () => setOpendescSummary(false);
@@ -110,8 +111,11 @@ export default function Product() {
     p: 4,
   };
   // update product
-  const [inputs, setInputs] = useState({});
-  // const [file, setFile] = useState(null);
+  const [inputs, setInputs] = useState({
+    title: product.title,
+    price: product.price,
+  });
+
   const [cat, setCat] = useState([]);
   const dispatch = useDispatch();
   const handleChange = (e) => {
@@ -133,17 +137,24 @@ export default function Product() {
     });
     setFiles(orderedFiles);
   };
-  
+
   const handleClick = (e) => {
     e.preventDefault();
-  
+    const updatedProduct = {};
+
+    // Update the input fields that have non-empty values
+    Object.entries(inputs).forEach(([key, value]) => {
+      if (value.trim() !== "") {
+        updatedProduct[key] = value;
+      }
+    });
     if (files.length > 0) {
       const uploadPromises = files.map((file) => {
         const fileName = new Date().getTime() + file.name;
         const storage = getStorage(app);
         const storageRef = ref(storage, fileName);
         const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
         return new Promise((resolve, reject) => {
           uploadTask.on(
             "state_changed",
@@ -179,74 +190,42 @@ export default function Product() {
           );
         });
       });
-  
+
       Promise.all(uploadPromises)
         .then((downloadURLs) => {
-          const product = {
-            ...inputs,
-            imgs: downloadURLs, // Lưu trữ các URL tải xuống trong imgs
-            categories: cat,
-            descSummary: descSummary,
-            descDetails: descDetails,
-          };
-          updateProduct(productId, product, dispatch);
+          updatedProduct.imgs = downloadURLs; // Update the 'imgs' field with new URLs
+          if (cat.length > 0) {
+            updatedProduct.categories = cat;
+          }
+          if (descSummary.trim() !== "") {
+            updatedProduct.descSummary = descSummary;
+          }
+          if (descDetails.trim() !== "") {
+            updatedProduct.descDetails = descDetails;
+          }
+
+          updateProduct(productId, updatedProduct, dispatch);
         })
         .catch((error) => {
-          // Xử lý lỗi khi tải lên không thành công
+          // Error handling for file uploads
           console.error(error);
+          toast.error("Failed to upload images. Please try again.");
         });
     } else {
-      toast.warning("Vui lòng chọn ít nhất một tệp ảnh")
+      // If there are no new files, update the remaining non-empty fields
+      if (cat.length > 0) {
+        updatedProduct.categories = cat;
+      }
+      if (descSummary.trim() !== "") {
+        updatedProduct.descSummary = descSummary;
+      }
+      if (descDetails.trim() !== "") {
+        updatedProduct.descDetails = descDetails;
+      }
+
+      updateProduct(productId, updatedProduct, dispatch);
     }
   };
-  // const handleClick = (e) => {
-  //   e.preventDefault();
-  //   const fileName = new Date().getTime() + file.name;
-  //   const storage = getStorage(app);
-  //   const storageRef = ref(storage, fileName);
-  //   const uploadTask = uploadBytesResumable(storageRef, file);
-
-  //   // Register three observers:
-  //   // 1. 'state_changed' observer, called any time the state changes
-  //   // 2. Error observer, called on failure
-  //   // 3. Completion observer, called on successful completion
-  //   uploadTask.on(
-  //     "state_changed",
-  //     (snapshot) => {
-  //       // Observe state change events such as progress, pause, and resume
-  //       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-  //       const progress =
-  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //       console.log("Upload is " + progress + "% done");
-  //       switch (snapshot.state) {
-  //         case "paused":
-  //           console.log("Upload is paused");
-  //           break;
-  //         case "running":
-  //           console.log("Upload is running");
-  //           break;
-  //         default:
-  //       }
-  //     },
-  //     (error) => {
-  //       // Handle unsuccessful uploads
-  //     },
-  //     () => {
-  //       // Handle successful uploads on complete
-  //       // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //         const product = {
-  //           ...inputs,
-  //           img: downloadURL,
-  //           categories: cat,
-  //           descSummary: descSummary,
-  //           descDetails: descDetails,
-  //         };
-  //         updateProduct(productId, product, dispatch);
-  //       });
-  //     }
-  //   );
-  // };
 
   useEffect(() => {
     const getStats = async () => {
@@ -308,8 +287,10 @@ export default function Product() {
               type="text"
               name="title"
               placeholder={product.title}
+              value={inputs.title} // Use value from state
               onChange={handleChange}
             />
+
             <label>Description Summary</label>
             <Button
               onClick={handleOpendescSummary}
@@ -343,7 +324,7 @@ export default function Product() {
                 </Button>
                 <JoditEditor
                   ref={editor}
-                  value={descSummary}
+                  value={descSummary} // Use the stored content
                   config={config}
                   tabIndex={1}
                   onBlur={(newContent) => setDescSummary(newContent)}
@@ -396,7 +377,7 @@ export default function Product() {
                 </Button>
                 <JoditEditor
                   ref={editor}
-                  value={descDetails}
+                  value={descDetails} // Use the stored content
                   config={config}
                   tabIndex={1}
                   onBlur={(newContent) => setDescDetails(newContent)}
@@ -421,12 +402,16 @@ export default function Product() {
               name="price"
               type="text"
               placeholder={product.price}
+              value={inputs.price} // Use value from state
               onChange={handleChange}
             />
             <label>Categories</label>
-            <select name="cat" onChange={handleCat}>
-              {cattt.map((category) => (
-                <option value={category.cat}>{category.title}</option>
+            <select name="cat" onChange={handleCat} style={{fontSize:15}}>
+              <option value={catSelector[0]}>--Chọn--</option>
+              {catSelector.map((category) => (
+                <option key={category._id} value={category.cat}>
+                  {category.title}
+                </option>
               ))}
             </select>
           </div>

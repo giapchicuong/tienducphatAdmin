@@ -109,7 +109,16 @@ export default function NewProduct() {
   
   const handleClick = (e) => {
     e.preventDefault();
-  
+  // Check if at least one input field is non-empty
+    const hasNonEmptyInput = Object.values(inputs).some(
+      (value) => value.trim() !== ""
+    );
+
+    if (!hasNonEmptyInput) {
+      // Display an error message or take appropriate action when no inputs are filled
+      toast.warning("Vui lòng điền vào ít nhất một ô  trước khi cập nhật.");
+      return;
+    }
     if (files.length > 0) {
       const uploadPromises = files.map((file) => {
         const fileName = new Date().getTime() + file.name;

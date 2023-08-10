@@ -176,7 +176,13 @@
 	background-position: right;
 }
 
-
+.show-password-icon {
+	position: relative;
+	top: 30%;
+	left: 45%;
+	right: 0;
+	bottom: 0;
+}
 @media screen and (max-width: 1050px){
 	.Logincontainer{
 		grid-gap: 5rem;
