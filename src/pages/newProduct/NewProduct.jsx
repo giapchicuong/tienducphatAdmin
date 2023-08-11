@@ -33,7 +33,7 @@ export default function NewProduct() {
     });
   };
   const handleCat = (e) => {
-    setCat(e.target.value.split(","));
+    setCat(e.target.value);
   };
   const [opendescSummary, setOpendescSummary] = useState(false);
   const [opendescDetails, setOpendescDetails] = useState(false);

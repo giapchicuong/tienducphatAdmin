@@ -34,7 +34,7 @@ export default function NewNew() {
     });
   };
   const handleCat = (e) => {
-    setCat(e.target.value.split(","));
+    setCat(e.target.value);
   };
   const [opendescSummary, setOpendescSummary] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);

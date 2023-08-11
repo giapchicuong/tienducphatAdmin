@@ -29,7 +29,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 export default function New() {
-  const cattt = useSelector((state) => state.category.categories);
+  const catSelector = useSelector((state) => state.category.categories);
   const location = useLocation();
   const newId = location.pathname.split("/")[2];
   const New = useSelector((state) =>
@@ -114,12 +114,12 @@ export default function New() {
     });
   };
   const handleCat = (e) => {
-    setCat(e.target.value.split(","));
+    setCat(e.target.value);
+    
   };
-
+  
   const handleClick = async (e) => {
     e.preventDefault();
-
     try {
       let downloadURL = New.img; // Default value if the file is not updated
 
@@ -142,26 +142,26 @@ export default function New() {
           },
           async () => {
             downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            const updatedCategory = {
+            const updatedNew = {
               ...inputs,
               img: downloadURL,
               categories: cat,
               descSummary: descSummary,
               descDetails: descDetails,
             };
-            updateNew(newId, updatedCategory, dispatch);
+            updateNew(newId, updatedNew, dispatch);
           }
         );
       } else {
         // If no new file is selected, update the category with other fields
-        const updatedCategory = {
+        const updatedNew = {
           ...inputs,
           img: downloadURL,
           categories: cat,
           descSummary: descSummary,
           descDetails: descDetails,
         };
-        updateNew(newId, updatedCategory, dispatch);
+        updateNew(newId, updatedNew, dispatch);
       }
     } catch (error) {
       console.error("Error updating category: ", error);
@@ -225,13 +225,14 @@ export default function New() {
               </div>
               <div className="newUpdateItem">
                 <label>Categories</label>
-                <select name="cat" onChange={handleCat} value={inputs.cat}>
-                  {cattt.map((category) => (
-                    <option
-                      key={category.cat}
-                      value={category.cat}
-                      selected={New.cat && New.cat[0] === category.cat[0] ? true : false }
-                    >
+                <select
+                  name="cat"
+                  onChange={handleCat}
+                  style={{ fontSize: 15 }}
+                >
+                  <option value={catSelector[0]}>--Chọn--</option>
+                  {catSelector.map((category) => (
+                    <option key={category._id} value={category.cat}>
                       {category.title}
                     </option>
                   ))}

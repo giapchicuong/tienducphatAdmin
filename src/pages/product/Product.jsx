@@ -124,7 +124,7 @@ export default function Product() {
     });
   };
   const handleCat = (e) => {
-    setCat(e.target.value.split(","));
+    setCat(e.target.value);
   };
 
   const [files, setFiles] = useState([]);
@@ -144,10 +144,11 @@ export default function Product() {
 
     // Update the input fields that have non-empty values
     Object.entries(inputs).forEach(([key, value]) => {
-      if (value.trim() !== "") {
+      if (typeof value === "string" && value.trim() !== "") {
         updatedProduct[key] = value;
       }
     });
+
     if (files.length > 0) {
       const uploadPromises = files.map((file) => {
         const fileName = new Date().getTime() + file.name;
@@ -406,7 +407,7 @@ export default function Product() {
               onChange={handleChange}
             />
             <label>Categories</label>
-            <select name="cat" onChange={handleCat} style={{fontSize:15}}>
+            <select name="cat" onChange={handleCat} style={{ fontSize: 15 }}>
               <option value={catSelector[0]}>--Chọn--</option>
               {catSelector.map((category) => (
                 <option key={category._id} value={category.cat}>
