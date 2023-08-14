@@ -58,6 +58,8 @@ export default function NewProduct() {
       "|",
       "font",
       "fontsize",
+      'outdent', 'indent',  '|',
+       "lineHeight",
       "brush",
       "paragraph",
       "|",
