@@ -14,3 +14,9 @@ export const userRequest = axios.create({
   baseURL: BASE_URL,
   headers: { token: `Bearer ${TOKEN}` },
 });
+
+  // Thêm sự kiện beforeunload vào mã của bạn
+  window.addEventListener("beforeunload", () => {
+    // Xóa thông tin đăng nhập khỏi localStorage khi người dùng thoát trình duyệt
+    localStorage.removeItem("persist:root");
+  });
