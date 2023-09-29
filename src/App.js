@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Sidebar from "./components/sidebar/Sidebar";
 import Topbar from "./components/topbar/Topbar";
@@ -23,11 +23,17 @@ import NewCategory from "./pages/newCategory/NewCategory";
 import NewList from "./pages/newList/NewList";
 import New from "./pages/new/New";
 import NewNew from "./pages/newNew/NewNew";
+import { getCategories, getNews, getProducts } from "./redux/apiCalls";
 
 function App() {
   const admin = useSelector((state) => state.user.currentUser?.isAdmin);
   const isAuthenticated = useSelector((state) => state.user.currentUser !== null);
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    getCategories(dispatch);
+    getProducts(dispatch);
+    getNews(dispatch);
+  },[dispatch]);
   return (
     <Router>
       <Switch>
